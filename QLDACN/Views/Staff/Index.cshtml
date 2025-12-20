@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Nhân viên";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhân viên - Bảng điều khiển</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#11d473",
+                        "primary-dark": "#0e9f56",
+                        "deep-teal": "#0d1b14",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102219",
+                    },
+                    fontFamily: { display: ["Inter", "sans-serif"] },
+                    borderRadius: { "2xl": "1rem" }
+                }
+            }
+        }
+    </script>
+    <style>.material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}</style>
+    </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+        <aside class="hidden md:flex flex-col w-64 h-full bg-deep-teal text-white flex-shrink-0">
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-deep-teal text-xl">recycling</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">Trash to Reward</h1>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" asp-controller="Staff" asp-action="Index">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Bảng điều khiển</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Schedules">
+                    <span class="material-symbols-outlined">event</span>
+                    <span class="text-sm font-medium">Lịch thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Receipts">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-sm font-medium">Ghi nhận thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Deliveries">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <span class="text-sm font-medium">Lịch giao quà</span>
+                </a>
+            </nav>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="px-4 py-4 mt-auto">
+                @{
+                    var staffName = User?.Identity?.Name ?? "Nhân viên";
+                    var staffInitial = string.IsNullOrWhiteSpace(staffName) ? "NV" : staffName.Substring(0,1).ToUpperInvariant();
+                }
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors border border-white/10">
+                    <div class="w-7 h-7 rounded-full bg-primary text-deep-teal flex items-center justify-center font-bold">@staffInitial</div>
+                    <span class="text-sm font-medium flex-1 text-left">@staffName</span>
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </form>
+        </aside>
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fcfa] dark:bg-background-dark relative">
+            <header class="h-16 flex items-center justify-between px-8 bg-white/50 dark:bg-deep-teal/50 backdrop-blur-sm border-b border-gray-100 dark:border-white/5 z-20 sticky top-0">
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-bold text-deep-teal dark:text-white">Bảng điều khiển</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Tổng quan tác vụ dành cho nhân viên</p>
+                </div>
+            </header>
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                        <h3 class="text-lg font-bold text-deep-teal dark:text-white">Phiếu ghi nhận</h3>
+                        <p class="text-3xl font-bold mt-2 text-primary">@ViewData["TotalReceipts"]</p>
+                    </div>
+                    <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                        <h3 class="text-lg font-bold text-deep-teal dark:text-white">Đơn giao quà</h3>
+                        <p class="text-3xl font-bold mt-2 text-primary">@ViewData["TotalRedemptions"]</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

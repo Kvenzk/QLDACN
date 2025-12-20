@@ -1,0 +1,203 @@
+@model IEnumerable<QLDACN.Models.Gift>
+@{
+    ViewData["Title"] = "Phần thưởng";
+    var userPoints = (decimal)(ViewData["UserPoints"] ?? 0m);
+}
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trash to Reward - Trang đổi thưởng</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d473",
+                        "primary-dark": "#0ea65a",
+                        "secondary": "#ff6b6b", // Coral
+                        "accent": "#feca57", // Electric Yellow
+                        "background-light": "#f8fcfa",
+                        "background-dark": "#102219",
+                        "text-main": "#0d1b14",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        "card": "0 4px 20px -2px rgba(13, 27, 20, 0.08)",
+                        "card-hover": "0 10px 25px -5px rgba(13, 27, 20, 0.12)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(135deg, #11d473 0%, #0d1b14 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main antialiased min-h-screen flex flex-col">
+<!-- Top Navigation -->
+
+<main class="flex-grow">
+<!-- Hero / Points Balance Section -->
+<section class="pt-12 pb-8 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto">
+<div class="bg-white dark:bg-[#152a20] rounded-3xl p-8 md:p-12 shadow-card relative overflow-hidden group">
+<!-- Abstract decorative blobs -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="absolute -left-10 -bottom-10 w-40 h-40 bg-accent/20 rounded-full blur-2xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex flex-col gap-4 max-w-xl text-center md:text-left">
+<div class="inline-flex self-center md:self-start items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm">verified</span>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Thành viên hạng Vàng</span>
+</div>
+<h2 class="text-4xl md:text-5xl font-black text-text-main dark:text-white tracking-tight leading-tight">
+                            Điểm tích lũy hiện tại
+                        </h2>
+<div class="flex items-baseline justify-center md:justify-start gap-2">
+<span class="text-6xl md:text-7xl font-black text-primary drop-shadow-sm">@userPoints.ToString("N0")</span>
+<span class="text-xl md:text-2xl font-bold text-text-main/60 dark:text-gray-400">điểm</span>
+</div>
+<p class="text-text-main/70 dark:text-gray-300 text-lg leading-relaxed">
+                            Bạn đã tái chế 12kg rác thải nhựa tháng này. Hãy đổi điểm lấy những phần quà giá trị và tiếp tục hành trình xanh!
+                        </p>
+<div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<a asp-controller="Activity" asp-action="Points" class="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-xl font-bold text-base transition-all shadow-lg hover:shadow-primary/30 flex items-center justify-center gap-2">
+    <span class="material-symbols-outlined">history</span>
+    Xem lịch sử điểm
+</a>
+</div>
+</div>
+<!-- 3D Graphic Placeholder -->
+<div class="w-full max-w-xs md:max-w-sm aspect-square relative flex items-center justify-center">
+<div class="w-full h-full bg-contain bg-center bg-no-repeat animate-[float_6s_ease-in-out_infinite]" data-alt="3D render of floating gold coins and emerald gems representing points" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKMUT0SAMXxFR1Rm5E4UKrJ-_etkNPxeQ8G78ngGpxffpnWyg1SIcPzKpCy_NadfwAK9bLEScV7FQO46-Rmh1thdOripWMBLRDCcOoLhyPn36aYCkejdO0HyWxNf5JIeCA7C-eHqaeZ02ep860tosADM6bVEAfsILfCQLBK2S8-wjjKimxQ1Bta8BPZ5xbRIXLxE0KNdHGT4iS3CnHVdgksII6Mkvb6DQ-wZxpSr9H2F8e95IXaM10c5_805C39cu30vI-da8Q0g");'>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters Section -->
+<section class="sticky top-16 z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm py-4 border-b border-gray-100 dark:border-gray-800">
+<div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+<h3 class="text-lg font-bold text-text-main dark:text-white whitespace-nowrap">Danh mục phần thưởng</h3>
+<div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-text-main text-white text-sm font-semibold shadow-md whitespace-nowrap transition-transform hover:scale-105">
+                            Tất cả
+                        </button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-text-main dark:text-gray-200 text-sm font-medium hover:border-primary hover:text-primary transition-all whitespace-nowrap">
+                            Vouchers
+                        </button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-text-main dark:text-gray-200 text-sm font-medium hover:border-primary hover:text-primary transition-all whitespace-nowrap">
+                            Vật phẩm
+                        </button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-text-main dark:text-gray-200 text-sm font-medium hover:border-primary hover:text-primary transition-all whitespace-nowrap">
+                            Quyên góp
+                        </button>
+</div>
+<div class="hidden md:flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">sort</span>
+<select class="bg-transparent border-none text-sm font-medium text-text-main dark:text-gray-200 focus:ring-0 p-0 pr-6 cursor-pointer">
+<option>Phổ biến nhất</option>
+<option>Điểm: Thấp đến Cao</option>
+<option>Điểm: Cao đến Thấp</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Rewards Grid -->
+<section class="py-8 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto mb-12">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+@foreach (var gift in Model)
+{
+    var isLocked = userPoints < gift.PointsRequired;
+    <div class="bg-white dark:bg-[#152a20] rounded-2xl p-4 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full border border-transparent hover:border-primary/20 @(isLocked ? "opacity-75 grayscale" : "")">
+        <div class="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 mb-4">
+            @if (!string.IsNullOrEmpty(gift.Category) && gift.Category == "Vật phẩm" && gift.Name.Contains("Eco Life"))
+            {
+                <div class="absolute top-3 left-3 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm z-10">HOT</div>
+            }
+            @if (!string.IsNullOrEmpty(gift.Category) && gift.Category == "Voucher" && gift.Name.Contains("Grab"))
+            {
+                <div class="absolute top-3 left-3 bg-accent text-[#0d1b14] text-[10px] font-bold px-2 py-1 rounded shadow-sm z-10">BEST SELLER</div>
+            }
+            @if (!string.IsNullOrEmpty(gift.Category) && gift.Category == "Voucher" && gift.Name.Contains("Spotify"))
+            {
+                <div class="absolute top-3 left-3 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm z-10">NEW</div>
+            }
+            @if (isLocked)
+            {
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center z-20 group-hover:hidden backdrop-blur-[1px]">
+                    <span class="bg-white/90 text-text-main text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">lock</span> @gift.PointsRequired GP
+                    </span>
+                </div>
+            }
+            @{
+                var imgUrl = string.IsNullOrWhiteSpace(gift.ImageUrl) ? "https://via.placeholder.com/400x300?text=Reward" : gift.ImageUrl;
+            }
+            <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="@gift.Name" style='background-image: url("@imgUrl"), url("https://via.placeholder.com/400x300?text=Reward");'>
+            </div>
+        </div>
+        <div class="flex flex-col flex-1">
+            <h4 class="text-lg font-bold text-text-main dark:text-white leading-tight mb-2">@gift.Name</h4>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">@gift.Description</p>
+            <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="text-xs text-gray-400 font-medium">Giá đổi</span>
+                    <span class="text-xl font-bold @(isLocked ? "text-gray-400" : "text-primary")">@gift.PointsRequired <span class="text-sm font-normal text-gray-500">GP</span></span>
+                </div>
+                <button class="@(isLocked ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-primary/10 hover:bg-primary hover:text-white text-primary") rounded-lg p-2 transition-colors" @(isLocked ? "disabled" : "")>
+                    <span class="material-symbols-outlined">@(isLocked ? "lock" : gift.Category == "Quyên góp" ? "volunteer_activism" : gift.Category == "Voucher" ? "confirmation_number" : "shopping_cart")</span>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+</section>
+</main>
+
+<style>
+        @@keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>
+
+
+
+
+
+
+
+
+
+
+

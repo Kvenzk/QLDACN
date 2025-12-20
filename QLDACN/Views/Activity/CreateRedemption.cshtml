@@ -1,0 +1,174 @@
+@{
+    ViewData["Title"] = "Tạo phiếu đổi quà";
+    var gifts = (IEnumerable<QLDACN.Models.Gift>)ViewBag.Gifts;
+    var netPoints = (decimal)(ViewBag.NetPoints ?? 0m);
+}
+<section class="px-4 md:px-8 lg:px-40 py-10">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Tạo phiếu đổi quà</h1>
+            <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary border border-primary/20">Điểm khả dụng @netPoints</span>
+        </div>
+        <form asp-action="CreateRedemption" method="post" id="redeemForm" class="flex flex-col gap-6">
+            <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Chọn phần quà</h3>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Ước tính: <span id="estimatedTotal" class="font-semibold text-primary">0 điểm</span></div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4" id="giftCards">
+                    @foreach (var g in gifts)
+                    {
+                        var locked = netPoints < g.PointsRequired;
+                        <button type="button"
+                                class="gift-card flex flex-col items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 hover:bg-primary/10 text-gray-700 dark:text-gray-300 @(locked ? "opacity-60 cursor-not-allowed" : "")"
+                                data-id="@g.GiftId"
+                                data-name="@g.Name"
+                                data-ppu="@g.PointsRequired"
+                                data-stock="@g.StockQuantity"
+                                @(locked ? "disabled" : "")>
+                            <span class="material-symbols-outlined text-primary">
+                                @(g.Category == "Voucher" ? "confirmation_number" : g.Category == "Quyên góp" ? "volunteer_activism" : "redeem")
+                            </span>
+                            <span class="text-sm font-medium">@g.Name</span>
+                            <span class="text-xs text-gray-400">@g.PointsRequired điểm</span>
+                        </button>
+                    }
+                </div>
+                <div id="items" class="space-y-3">
+                    <div class="grid grid-cols-3 md:grid-cols-12 gap-3 item-row hidden">
+                        <div class="md:col-span-6 col-span-3">
+                            <label class="text-xs text-gray-500">Phần quà</label>
+                            <select name="giftIds" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" disabled>
+                                <option value="">-- Chọn phần quà --</option>
+                                @foreach (var g in gifts)
+                                {
+                                    <option value="@g.GiftId" data-ppu="@g.PointsRequired" data-stock="@g.StockQuantity">@g.Name (@g.PointsRequired điểm)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="md:col-span-3 col-span-3">
+                            <label class="text-xs text-gray-500">Số lượng</label>
+                            <input name="quantities" type="number" step="1" min="1" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Ví dụ: 1" disabled />
+                        </div>
+                        <div class="md:col-span-2 col-span-2 text-sm text-gray-600 dark:text-gray-300 item-points">0 điểm</div>
+                        <div class="md:col-span-1 col-span-1">
+                            <button type="button" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 remove-btn">Xóa</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between">
+                    <button type="button" id="addItem" class="hidden px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-gray-300">Thêm phần quà</button>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Chọn phần quà bằng các thẻ ở trên</div>
+                </div>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500">Ghi chú</label>
+                        <textarea name="note" rows="3" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Thông tin bổ sung (không bắt buộc)"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Địa chỉ giao quà</label>
+                        <input name="deliveryAddress" type="text" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Ví dụ: 123 Nguyễn Trãi, Quận 1" />
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-3">
+                <a asp-action="Redemptions" class="px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300">Hủy</a>
+                <button type="button" id="confirmBtn" class="px-4 py-2 rounded-xl bg-primary text-white border border-primary hover:bg-primary-dark flex items-center justify-center gap-2">
+                    Xác nhận đổi quà <span class="material-symbols-outlined text-white">arrow_forward</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+<script>
+    const items = document.getElementById('items');
+    const totalEl = document.getElementById('estimatedTotal');
+    const netPoints = parseFloat('@netPoints');
+    const confirmBtn = document.getElementById('confirmBtn');
+    function updateTotal() {
+        let total = 0;
+        items.querySelectorAll('.item-row[data-id]').forEach(row => {
+            const qtyEl = row.querySelector('input[name="quantities"]');
+            let qty = parseInt(qtyEl.value || '1', 10);
+            const max = parseInt(qtyEl.getAttribute('max') || '9999', 10);
+            if (isNaN(qty) || qty < 1) qty = 1;
+            if (!isNaN(max) && qty > max) { qty = max; qtyEl.value = String(max); }
+            const ppu = Number(row.dataset.ppu || 0);
+            total += ppu * qty;
+            const itemPointEl = row.querySelector('.item-points');
+            if (itemPointEl) itemPointEl.textContent = `${(ppu * qty).toLocaleString('vi-VN')} điểm`;
+        });
+        totalEl.textContent = `${total.toLocaleString('vi-VN')} điểm`;
+        if (total > netPoints) {
+            totalEl.classList.add('text-red-600');
+        } else {
+            totalEl.classList.remove('text-red-600');
+        }
+        confirmBtn.disabled = total <= 0 || total > netPoints;
+    }
+    function addItemCard(id, name, ppu, stock) {
+        if (items.querySelector(`.item-row[data-id="${id}"]`)) return;
+        const row = document.createElement('div');
+        row.className = 'item-row grid grid-cols-12 gap-3 items-center';
+        row.dataset.id = id;
+        row.dataset.ppu = ppu;
+        row.dataset.name = name;
+        row.dataset.stock = stock;
+        row.innerHTML = `
+            <input type="hidden" name="giftIds" value="${id}">
+            <div class="col-span-5 flex items-center gap-2">
+                <span class="px-2 py-1 rounded-lg bg-primary/10 text-primary text-xs border border-primary/20">${name}</span>
+                <span class="text-xs text-gray-400">${ppu} điểm</span>
+            </div>
+            <div class="col-span-4">
+                <input name="quantities" type="number" step="1" min="1" max="${stock}" value="1" class="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Ví dụ: 1">
+            </div>
+            <div class="col-span-2 text-sm text-gray-600 dark:text-gray-300 item-points">0 điểm</div>
+            <div class="col-span-1">
+                <button type="button" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 remove-btn">Xóa</button>
+            </div>
+        `;
+        items.appendChild(row);
+        updateTotal();
+    }
+    document.getElementById('giftCards').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+        if (btn.disabled) return;
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const ppu = btn.dataset.ppu;
+        const stock = btn.dataset.stock;
+        const existing = items.querySelector(`.item-row[data-id="${id}"]`);
+        if (existing) {
+            existing.remove();
+            btn.classList.remove('bg-primary/10', 'border-primary/20', 'text-primary');
+            updateTotal();
+        } else {
+            addItemCard(id, name, ppu, stock);
+            btn.classList.add('bg-primary/10', 'border-primary/20', 'text-primary');
+        }
+    });
+    items.addEventListener('input', updateTotal);
+    items.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            const row = e.target.closest('.item-row');
+            const id = row.dataset.id;
+            row.remove();
+            updateTotal();
+            const card = document.querySelector(`#giftCards .gift-card[data-id="${id}"]`);
+            if (card) card.classList.remove('bg-primary/10', 'border-primary/20', 'text-primary');
+        }
+    });
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+        const form = document.getElementById('redeemForm');
+        const hasItems = items.querySelectorAll('.item-row[data-id]').length > 0;
+        const hasPositiveQty = Array.from(items.querySelectorAll('input[name="quantities"]')).some(i => parseInt(i.value || '0', 10) > 0);
+        if (!hasItems || !hasPositiveQty) { alert('Vui lòng chọn phần quà và nhập số lượng hợp lệ'); return; }
+        // điểm đủ?
+        const totalText = document.getElementById('estimatedTotal').textContent.replace(' điểm','');
+        const total = parseFloat(totalText) || 0;
+        if (total > netPoints) { alert('Điểm không đủ để đổi quà'); return; }
+        if (form) form.requestSubmit();
+    });
+</script>

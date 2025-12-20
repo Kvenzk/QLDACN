@@ -1,0 +1,273 @@
+@{
+    ViewData["Title"] = "Tạo phiếu ghi nhận";
+    Layout = null;
+    var schedule = (QLDACN.Models.PickupSchedule)ViewBag.Schedule;
+    var wasteTypes = (IEnumerable<QLDACN.Models.WasteType>)ViewBag.WasteTypes;
+}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhân viên - Tạo phiếu ghi nhận</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#11d473",
+                        "primary-dark": "#0e9f56",
+                        "deep-teal": "#0d1b14",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102219",
+                    },
+                    fontFamily: { display: ["Inter", "sans-serif"] },
+                    borderRadius: { "2xl": "1rem" }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+        <aside class="hidden md:flex flex-col w-64 h-full bg-deep-teal text-white flex-shrink-0">
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-deep-teal text-xl">recycling</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">Trash to Reward</h1>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Index">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Bảng điều khiển</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" asp-controller="Staff" asp-action="Schedules">
+                    <span class="material-symbols-outlined">event</span>
+                    <span class="text-sm font-medium">Lịch thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Receipts">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-sm font-medium">Ghi nhận thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Deliveries">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <span class="text-sm font-medium">Lịch giao quà</span>
+                </a>
+            </nav>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="px-4 py-4 mt-auto">
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors border border-white/10">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="text-sm font-medium">Đăng xuất</span>
+                </button>
+            </form>
+        </aside>
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fcfa] dark:bg-background-dark relative">
+            <header class="h-16 flex items-center justify-between px-8 bg-white/50 dark:bg-deep-teal/50 backdrop-blur-sm border-b border-gray-100 dark:border-white/5 z-20 sticky top-0">
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-bold text-deep-teal dark:text-white">Tạo phiếu ghi nhận</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Lịch #@schedule.ScheduledId • @schedule.ScheduledDate.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+            </header>
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 flex flex-col gap-6">
+                        <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">location_on</span>
+                                <h3 class="text-lg font-bold">Địa điểm thu gom</h3>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Địa chỉ nhận</label>
+                                    <input type="text" value="@schedule.PickupAddress" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Người dùng</label>
+                                    <input type="text" value="@(schedule.User?.FullName ?? schedule.User?.Username ?? "—")" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <form asp-action="CreateReceipt" method="post" id="receiptForm" class="flex flex-col gap-6">
+                            <input type="hidden" name="scheduleId" value="@schedule.ScheduledId" />
+
+                            <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold">Loại rác & Khối lượng</h3>
+                                    <div class="text-sm text-gray-600 dark:text-gray-300">Ước tính: <span id="estimatedTotal" class="font-semibold text-primary">0 điểm</span></div>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4" id="typeCards">
+                                    @foreach (var w in wasteTypes)
+                                    {
+                                        var icon = "recycling";
+                                        var nameLower = w.Name.ToLower();
+                                        if (nameLower.Contains("nhựa") || nameLower.Contains("hdpe") || nameLower.Contains("pet") || nameLower.Contains("pp") || nameLower.Contains("túi"))
+                                            icon = "delete";
+                                        else if (nameLower.Contains("báo") || nameLower.Contains("tạp chí") || nameLower.Contains("giấy văn phòng") || nameLower.Contains("giấy"))
+                                            icon = "article";
+                                        else if (nameLower.Contains("cát-tông") || nameLower.Contains("cat-tong") || nameLower.Contains("carton"))
+                                            icon = "inventory_2";
+                                        else if (nameLower.Contains("chai") || nameLower.Contains("lọ") || nameLower.Contains("thủy tinh") || nameLower.Contains("thuy tinh"))
+                                            icon = "wine_bar";
+                                        else if (nameLower.Contains("lon") || nameLower.Contains("nhôm") || nameLower.Contains("thiếc"))
+                                            icon = "lunch_dining";
+                                        else if (nameLower.Contains("điện") || nameLower.Contains("điện") || nameLower.Contains("điện tử"))
+                                            icon = "memory";
+                                        else if (nameLower.Contains("hộp sữa"))
+                                            icon = "package_2";
+                                        <button type="button"
+                                                class="type-card flex flex-col items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 hover:bg-primary/10 text-gray-700 dark:text-gray-300"
+                                                data-id="@w.WasteTypeId"
+                                                data-name="@w.Name"
+                                                data-ppu="@w.PointPerUnit"
+                                                data-unit="@w.Unit">
+                                            <span class="material-symbols-outlined text-primary">@icon</span>
+                                            <span class="text-sm font-medium">@w.Name</span>
+                                        </button>
+                                    }
+                                </div>
+                                <div id="items" class="space-y-3">
+                                    <div class="grid grid-cols-2 gap-4 item-row hidden">
+                                        <div>
+                                            <label class="text-xs text-gray-500">Loại rác</label>
+                                            <select name="wasteTypeIds" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" disabled>
+                                                <option value="">-- Chọn loại rác --</option>
+                                                @foreach (var w in wasteTypes)
+                                                {
+                                                    <option value="@w.WasteTypeId" data-ppu="@w.PointPerUnit">@w.Name (@w.Unit, @w.PointPerUnit điểm/@w.Unit)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500">Khối lượng</label>
+                                            <input name="quantities" type="number" step="0.1" min="0.1" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Ví dụ: 3.5" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <button type="button" id="addItem" class="hidden px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-gray-300">Thêm vật liệu</button>
+                                    <div class="text-sm text-gray-600 dark:text-gray-300">Chọn loại rác bằng các thẻ ở trên</div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="text-xs text-gray-500">Ghi chú</label>
+                                    <textarea name="note" rows="3" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Thông tin bổ sung (không bắt buộc)"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end gap-3">
+                                <a asp-controller="Staff" asp-action="Schedules" class="px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300">Hủy</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                        <h3 class="text-lg font-bold mb-4">Tổng quan đơn hàng</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between"><span class="text-gray-500">Loại rác:</span><span id="summaryWaste" class="font-medium text-deep-teal dark:text-white">Chưa chọn</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Thời gian:</span><span class="font-medium text-deep-teal dark:text-white">@schedule.ScheduledDate.ToString("HH:mm, dd/MM")</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Địa điểm:</span><span class="font-medium text-deep-teal dark:text-white">@schedule.PickupAddress</span></div>
+                        </div>
+                        <div class="mt-4 p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-500">Ước tính thưởng</span>
+                                <span class="text-2xl font-bold text-primary"><span id="summaryTotal">0</span> điểm</span>
+                            </div>
+                            <span class="material-symbols-outlined text-primary bg-white dark:bg-[#15241c] border border-primary/20 rounded-full p-2">work</span>
+                        </div>
+                        <button id="confirmBtn" class="mt-4 w-full px-4 py-3 rounded-xl bg-primary text-white border border-primary hover:bg-primary-dark flex items-center justify-center gap-2">
+                            Xác nhận ghi nhận <span class="material-symbols-outlined text-white">arrow_forward</span>
+                        </button>
+                        <p class="text-xs text-gray-500 mt-3">Bằng cách xác nhận, bạn đồng ý với Điều khoản dịch vụ.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+<script>
+    const items = document.getElementById('items');
+    const totalEl = document.getElementById('estimatedTotal');
+    function updateTotal() {
+        let total = 0;
+        items.querySelectorAll('.item-row[data-id]').forEach(row => {
+            const qtyEl = row.querySelector('input[name="quantities"]');
+            const qty = parseFloat(qtyEl.value || '0');
+            const ppu = parseFloat(row.dataset.ppu || '0');
+            total += ppu * qty;
+            const itemPointEl = row.querySelector('.item-points');
+            if (itemPointEl) itemPointEl.textContent = `${Math.round(ppu * qty * 100) / 100} điểm`;
+        });
+        totalEl.textContent = `${Math.round(total * 100) / 100} điểm`;
+        document.getElementById('summaryTotal').textContent = `${Math.round(total * 100) / 100}`;
+        updateSummary();
+    }
+    function addItemCard(id, name, unit, ppu) {
+        if (items.querySelector(`.item-row[data-id="${id}"]`)) return;
+        const row = document.createElement('div');
+        row.className = 'item-row grid grid-cols-12 gap-3 items-center';
+        row.dataset.id = id;
+        row.dataset.ppu = ppu;
+        row.dataset.name = name;
+        row.dataset.unit = unit;
+        row.innerHTML = `
+            <input type="hidden" name="wasteTypeIds" value="${id}">
+            <div class="col-span-5 flex items-center gap-2">
+                <span class="px-2 py-1 rounded-lg bg-primary/10 text-primary text-xs border border-primary/20">${name}</span>
+                <span class="text-xs text-gray-400">${unit}</span>
+            </div>
+            <div class="col-span-4">
+                <input name="quantities" type="number" step="0.1" min="0.1" class="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5" placeholder="Ví dụ: 3.5">
+            </div>
+            <div class="col-span-2 text-sm text-gray-600 dark:text-gray-300 item-points">0 điểm</div>
+            <div class="col-span-1">
+                <button type="button" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 remove-btn">Xóa</button>
+            </div>
+        `;
+        items.appendChild(row);
+        updateTotal();
+    }
+    document.getElementById('typeCards').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const unit = btn.dataset.unit;
+        const ppu = btn.dataset.ppu;
+        addItemCard(id, name, unit, ppu);
+        btn.classList.add('bg-primary/10', 'border-primary/20', 'text-primary');
+    });
+    items.addEventListener('input', updateTotal);
+    items.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            const row = e.target.closest('.item-row');
+            const id = row.dataset.id;
+            row.remove();
+            updateTotal();
+            const card = document.querySelector(`#typeCards .type-card[data-id="${id}"]`);
+            if (card) card.classList.remove('bg-primary/10', 'border-primary/20', 'text-primary');
+        }
+    });
+    function updateSummary() {
+        const selected = Array.from(items.querySelectorAll('.item-row[data-id]')).map(row => {
+            const qty = parseFloat(row.querySelector('input[name="quantities"]').value || '0');
+            const name = row.dataset.name || '';
+            const unit = row.dataset.unit || '';
+            if (qty <= 0) return null;
+            return `${name} ${qty}${unit}`;
+        }).filter(Boolean);
+        document.getElementById('summaryWaste').textContent = selected.length ? selected.join(', ') : 'Chưa chọn';
+    }
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+        const form = document.getElementById('receiptForm');
+        const hasItems = items.querySelectorAll('.item-row[data-id]').length > 0;
+        const hasPositiveQty = Array.from(items.querySelectorAll('input[name="quantities"]')).some(i => parseFloat(i.value || '0') > 0);
+        if (!hasItems || !hasPositiveQty) { alert('Vui lòng chọn vật liệu và nhập khối lượng hợp lệ'); return; }
+        if (form) form.requestSubmit();
+    });
+</script>
+</body>
+</html>

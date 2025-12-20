@@ -1,0 +1,42 @@
+@model IEnumerable<QLDACN.Models.PointTransaction>
+@{
+    ViewData["Title"] = "Lịch sử tích điểm";
+}
+<section class="px-4 md:px-8 lg:px-40 py-10">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <h1 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark mb-6">Lịch sử tích điểm</h1>
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/10">
+                            <th class="py-3 font-medium uppercase tracking-wider">Loại</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Điểm</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Mô tả</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-text-sec-light dark:text-text-sec-dark">
+                        @foreach (var p in Model)
+                        {
+                            var typeClass = p.TransactionType == "Issue"
+                                ? "px-2 py-1 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20"
+                                : "px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700 border border-red-200";
+                            var typeText = p.TransactionType == "Issue"
+                                ? "Đã nhận"
+                                : p.TransactionType == "Redeem"
+                                    ? "Đã dùng"
+                                    : p.TransactionType;
+                            <tr class="border-b border-gray-50 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <td class="py-4"><span class="@typeClass">@typeText</span></td>
+                                <td class="py-4">@p.Points.ToString("N0")</td>
+                                <td class="py-4">@((string.IsNullOrWhiteSpace(p.Description) ? "—" : p.Description))</td>
+                                <td class="py-4">@p.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

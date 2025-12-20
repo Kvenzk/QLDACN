@@ -1,0 +1,52 @@
+@model IEnumerable<QLDACN.Models.GiftRedemption>
+@{
+    ViewData["Title"] = "Phiếu đổi quà";
+}
+<section class="px-4 md:px-8 lg:px-40 py-10">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Phiếu đổi quà</h1>
+            <a asp-action="CreateRedemption" class="px-4 py-2 rounded-xl bg-primary text-white border border-primary hover:bg-primary-dark flex items-center justify-center gap-2">
+                Tạo phiếu đổi quà <span class="material-symbols-outlined text-white">add</span>
+            </a>
+        </div>
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/10">
+                            <th class="py-3 font-medium uppercase tracking-wider">Đơn</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Tổng điểm dùng</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Trạng thái</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Ngày tạo</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-text-sec-light dark:text-text-sec-dark">
+                        @foreach (var d in Model)
+                        {
+                            var stClass = d.Status == "Completed"
+                                ? "px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 border border-green-200"
+                                : d.Status == "Pending"
+                                    ? "px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 border border-yellow-200"
+                                    : "px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200";
+                            var stText = d.Status == "Completed" ? "Đã duyệt" : d.Status == "Pending" ? "Đang chờ" : d.Status;
+                            <tr class="border-b border-gray-50 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <td class="py-4">#@d.RedemptionId</td>
+                                <td class="py-4">@d.TotalPointsSpent</td>
+                                <td class="py-4"><span class="@stClass">@stText</span></td>
+                                <td class="py-4">@d.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="py-4">
+                                    <a asp-action="RedemptionDetails" asp-route-id="@d.RedemptionId"
+                                       class="px-3 py-1 rounded-lg text-xs font-bold bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

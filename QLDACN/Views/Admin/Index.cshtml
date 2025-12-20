@@ -1,0 +1,384 @@
+@{
+    ViewData["Title"] = "Quản trị";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trash to Reward Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d473",
+                        "primary-dark": "#0e9f56",
+                        "secondary": "#FF6B6B", // Coral
+                        "accent": "#E3F010", // Electric Yellow
+                        "deep-teal": "#0d1b14",
+                        "emerald-dark": "#064e3b",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102219",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for modern feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display antialiased overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col w-64 h-full bg-deep-teal text-white flex-shrink-0 transition-all duration-300">
+<div class="p-6 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-deep-teal text-xl">recycling</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Trash to Reward</h1>
+</div>
+<nav class="flex-1 px-4 py-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" asp-controller="Admin" asp-action="Index">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Bảng điều khiển</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Admin" asp-action="Staff">
+<span class="material-symbols-outlined">badge</span>
+<span class="text-sm font-medium">Nhân viên</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Admin" asp-action="Users">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Người dùng</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Admin" asp-action="Schedules">
+<span class="material-symbols-outlined">event</span>
+<span class="text-sm font-medium">Lịch thu gom</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Admin" asp-action="Receipts">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-sm font-medium">Ghi nhận thu gom</span>
+</a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Admin" asp-action="Deliveries">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="text-sm font-medium">Lịch giao quà</span>
+</a>
+</nav>
+<form asp-controller="Account" asp-action="Logout" method="post" class="px-4 py-4 mt-auto">
+<button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors border border-white/10">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Đăng xuất</span>
+</button>
+</form>
+<div class="p-4">
+<div class="bg-gradient-to-br from-emerald-dark to-deep-teal p-4 rounded-xl border border-white/10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+<div class="relative z-10">
+<p class="text-xs text-primary font-medium mb-1 uppercase tracking-wider">Premium User</p>
+<div class="flex items-center gap-3 mt-2">
+<div class="w-10 h-10 rounded-full bg-cover bg-center border-2 border-primary" data-alt="User profile picture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCPFnfO2HaFGlUtgyfPscuVau9jSUbcS4plrgyz0SYnCRqep4TJVgA7WBqa8jUaJpI5hyDfcay6CVetIG6D7ZvqQdNzGRWP8FhRnJrQvBrgVfBFGztH7bFXgv_lr7b2qpCLE2FIPtjfgjA5YeIqsqQ6QPvyij4AzTBwhOOkPdelQv1tOcwvUQUZy3ogh8huEg0L1dceNNvQVE1ccchCfcWBDGLSLAwrphfrVZ2JlAbBTieVwaeCe5eALmAgVDK4Ah_IvvxowRmNaA');"></div>
+<div>
+<p class="text-sm font-bold text-white">Alex Chen</p>
+<p class="text-xs text-gray-400">Level 12</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between text-gray-400 px-2">
+<button class="hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">settings</span></button>
+<button class="hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">logout</span></button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fcfa] dark:bg-background-dark relative">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-8 bg-white/50 dark:bg-deep-teal/50 backdrop-blur-sm border-b border-gray-100 dark:border-white/5 z-20 sticky top-0">
+<div class="flex flex-col">
+<h2 class="text-xl font-bold text-deep-teal dark:text-white">Bảng điều khiển</h2>
+<p class="text-xs text-gray-500 dark:text-gray-400">Chào mừng bạn đến bảng điều khiển quản trị.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border-2 border-white dark:border-deep-teal"></span>
+</button>
+<button class="flex items-center gap-2 bg-deep-teal text-white px-4 py-2 rounded-lg hover:bg-black transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+<span class="text-sm font-medium">Ghi nhận tái chế</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Top Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Points / Wealth Card -->
+<div class="col-span-1 md:col-span-1 bg-gradient-to-br from-[#0d1b14] to-[#1a382b] rounded-2xl p-6 text-white relative overflow-hidden shadow-xl">
+<!-- Decorative background shapes -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+<div class="relative z-10 flex flex-col h-full justify-between min-h-[160px]">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<p class="text-sm text-gray-400 font-medium">Giá trị phần thưởng</p>
+<h3 class="text-3xl font-bold mt-1 tracking-tight">12,450 <span class="text-lg font-normal text-primary">điểm</span></h3>
+<p class="text-xs text-primary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                            +$124.50 tương đương
+                                        </p>
+</div>
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined text-primary">wallet</span>
+</div>
+</div>
+<button class="mt-4 w-full py-2 bg-primary hover:bg-primary-dark text-deep-teal font-bold rounded-lg transition-colors flex items-center justify-center gap-2">
+                                    Đổi điểm
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- CO2 Stats -->
+<div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Lượng CO2 giảm</p>
+<h3 class="text-3xl font-bold text-deep-teal dark:text-white mt-1">850 <span class="text-lg text-gray-400 font-normal">kg</span></h3>
+</div>
+<div class="p-2 bg-[#e7f3ed] dark:bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">cloud_off</span>
+</div>
+</div>
+<div class="mt-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded">+5%</span>
+<span class="text-xs text-gray-400">so với tháng trước</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-white/5 rounded-full h-1.5 mt-2">
+<div class="bg-deep-teal dark:bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<!-- Streak / Gamification Lite -->
+<div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px] text-primary">local_fire_department</span>
+</div>
+<div class="flex justify-between items-start relative z-10">
+<div>
+<p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Chuỗi ngày</p>
+<h3 class="text-3xl font-bold text-deep-teal dark:text-white mt-1">14 <span class="text-lg text-gray-400 font-normal">Ngày</span></h3>
+</div>
+<div class="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+<span class="material-symbols-outlined text-orange-500">local_fire_department</span>
+</div>
+</div>
+<div class="mt-4 relative z-10">
+<p class="text-sm text-gray-600 dark:text-gray-300">Bạn đang rất tích cực! 🔥</p>
+<p class="text-xs text-gray-400 mt-1">Đăng nhập thêm 7 ngày để nhận <span class="text-orange-500 font-medium">Huy hiệu Phượng hoàng</span>.</p>
+</div>
+</div>
+</div>
+<!-- Middle Section: Chart & Detailed Gamification -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Chart -->
+<div class="lg:col-span-2 bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="text-lg font-bold text-deep-teal dark:text-white">Contribution History</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">Total recycled mass over last 6 months</p>
+</div>
+<div class="flex gap-2">
+<select class="bg-gray-50 dark:bg-white/5 border-none text-xs font-medium rounded-lg text-gray-600 dark:text-gray-300 py-1 px-3 focus:ring-primary">
+<option>Last 6 Months</option>
+<option>Last Year</option>
+</select>
+</div>
+</div>
+<div class="relative w-full h-64">
+<!-- Chart SVG (Reused and styled) -->
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 478 150" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#11d473" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#11d473" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 109C18.15 109 18.15 41 36.3 41C54.46 41 54.46 83 72.6 83C90.76 83 90.76 53 108.9 53C127 53 127 33 145.2 33C163.3 33 163.3 81 181.5 81C199.6 81 199.6 61 217.8 61C236 61 236 45 254.1 45C272.3 45 272.3 91 290.4 91C308.6 91 308.6 119 326.7 119C344.9 119 344.9 21 363 21C381.2 21 381.2 81 399.3 81C417.5 81 417.5 109 435.6 109C453.8 109 453.8 25 472 25V150H0V109Z" fill="url(#chartGradient)"></path>
+<path d="M0 109C18.15 109 18.15 41 36.3 41C54.46 41 54.46 83 72.6 83C90.76 83 90.76 53 108.9 53C127 53 127 33 145.2 33C163.3 33 163.3 81 181.5 81C199.6 81 199.6 61 217.8 61C236 61 236 45 254.1 45C272.3 45 272.3 91 290.4 91C308.6 91 308.6 119 326.7 119C344.9 119 344.9 21 363 21C381.2 21 381.2 81 399.3 81C417.5 81 417.5 109 435.6 109C453.8 109 453.8 25 472 25" stroke="#11d473" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+<!-- Tooltip simulated -->
+<div class="absolute top-[10%] left-[75%] bg-deep-teal text-white text-xs px-2 py-1 rounded shadow-lg transform -translate-x-1/2">
+                                    363kg
+                                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-deep-teal rotate-45"></div>
+</div>
+<div class="absolute top-[14%] left-[75%] w-3 h-3 bg-white border-2 border-primary rounded-full transform -translate-x-1/2"></div>
+</div>
+<div class="flex justify-between mt-4 px-2 text-xs text-gray-400 font-medium uppercase tracking-wider">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+</div>
+</div>
+<!-- Gamification / Level Progress -->
+<div class="lg:col-span-1 bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+<!-- Background pattern -->
+<div class="absolute inset-0 bg-[radial-gradient(#11d473_1px,transparent_1px)] [background-size:16px_16px] opacity-5"></div>
+<div class="w-full flex justify-between items-center mb-4 z-10">
+<h3 class="text-lg font-bold text-deep-teal dark:text-white">Current Status</h3>
+<span class="bg-accent/20 text-yellow-700 dark:text-yellow-300 text-xs font-bold px-2 py-1 rounded border border-accent/50">LEVEL 15</span>
+</div>
+<!-- 3D Graphic Placeholder -->
+<div class="w-32 h-32 mb-4 relative z-10 animate-pulse">
+<div class="w-full h-full bg-contain bg-no-repeat bg-center drop-shadow-2xl" data-alt="3D rendered badge of a glowing green earth inside a shield" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqeoWoPFebf898DoD18p_yJn2rLZQe6RQwu93qvUIszksX_Dx19bWme7aILf8zdEK_rdNnNuq9NnvXAZHP8EiI--zIXhTQ4FMscl2Xkry2nUKfPep8cb3C4btsHMnVfI-8p66H1NHt73SBHkDmvq26t2lqa1tXKgn32ETQbl1faBHt9WohurWihhhicuJ4AWG3GOoqTr7txIts6Iyi1O9fqn1l3OC4saVnpBq3gRRGQqxn-4PG2AB96SkEg3eakpBGSrkKJt8J5w');">
+</div>
+</div>
+<h4 class="text-xl font-bold text-deep-teal dark:text-white mb-1">Earth Guardian</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-6">You are in the top 5% of recyclers!</p>
+<div class="w-full z-10">
+<div class="flex justify-between text-xs font-medium text-gray-500 mb-2">
+<span>Progress</span>
+<span>75%</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-white/10 rounded-full h-3 mb-2">
+<div class="bg-gradient-to-r from-primary to-accent h-3 rounded-full relative" style="width: 75%;">
+<div class="absolute top-0 right-0 h-full w-full bg-white/20 animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+<p class="text-xs text-primary font-medium">500 pts to next level</p>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Transactions & Trending Rewards -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
+<!-- Recent Activity -->
+<div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-deep-teal dark:text-white">Recent Activity</h3>
+<a class="text-sm text-primary font-medium hover:underline" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/5">
+<th class="py-3 font-medium uppercase tracking-wider">Type</th>
+<th class="py-3 font-medium uppercase tracking-wider">Date</th>
+<th class="py-3 font-medium uppercase tracking-wider">Status</th>
+<th class="py-3 font-medium uppercase tracking-wider text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="text-sm text-gray-600 dark:text-gray-300">
+<tr class="border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<td class="py-4 flex items-center gap-3">
+<div class="p-2 rounded-lg bg-green-50 text-green-600 group-hover:bg-white group-hover:shadow-sm transition-all">
+<span class="material-symbols-outlined text-[20px]">recycling</span>
+</div>
+<span class="font-medium text-deep-teal dark:text-white">Plastic Deposit</span>
+</td>
+<td class="py-4 text-gray-500">Today, 10:23 AM</td>
+<td class="py-4"><span class="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 border border-yellow-200">Pending</span></td>
+<td class="py-4 text-right font-bold text-primary">+ 150 pts</td>
+</tr>
+<tr class="border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<td class="py-4 flex items-center gap-3">
+<div class="p-2 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-white group-hover:shadow-sm transition-all">
+<span class="material-symbols-outlined text-[20px]">local_cafe</span>
+</div>
+<span class="font-medium text-deep-teal dark:text-white">Starbucks Coupon</span>
+</td>
+<td class="py-4 text-gray-500">Yesterday</td>
+<td class="py-4"><span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 border border-green-200">Completed</span></td>
+<td class="py-4 text-right font-bold text-gray-800 dark:text-gray-200">- 500 pts</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<td class="py-4 flex items-center gap-3">
+<div class="p-2 rounded-lg bg-green-50 text-green-600 group-hover:bg-white group-hover:shadow-sm transition-all">
+<span class="material-symbols-outlined text-[20px]">recycling</span>
+</div>
+<span class="font-medium text-deep-teal dark:text-white">Glass Recycle</span>
+</td>
+<td class="py-4 text-gray-500">Mar 12, 2023</td>
+<td class="py-4"><span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 border border-green-200">Verified</span></td>
+<td class="py-4 text-right font-bold text-primary">+ 320 pts</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Trending Rewards -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-deep-teal dark:text-white">Trending Rewards</h3>
+<div class="flex gap-2">
+<button class="p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 h-full">
+<!-- Reward Card 1 -->
+<div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm group hover:-translate-y-1 transition-transform duration-300 cursor-pointer flex flex-col">
+<div class="h-32 rounded-xl bg-gray-50 dark:bg-black/20 mb-3 flex items-center justify-center relative overflow-hidden">
+<div class="absolute top-2 left-2 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded uppercase">Hot</div>
+<div class="w-20 h-20 bg-contain bg-center bg-no-repeat group-hover:scale-110 transition-transform duration-500" data-alt="3D floating gift card" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9dqDzcxKv1yPT2pg0a-dsckjEQHY8GAyN0aDYhyLuR2bODvpvWKeVSdMloeJWLRx8q-AHEUPVGKdrlxFtKQfNmaAXkimkGOlN8Og4iwuhsVEf8UJlQwl-pgD4TSGAS5A4pnCSBrEuDIK-KuXniAILu1nNhRuj-SLx8NLfy8tY61OgS1mil3VB-q4jv3Q8QcGWYru13XaFjUNFYpa2u1TMVV6azXiZpuCn8q9bilTIj9NDfxiTbjo5Qsnoy4l3NXuFFx7d3cpsIw');"></div>
+</div>
+<div class="mt-auto">
+<p class="text-xs text-gray-500 uppercase font-semibold">Voucher</p>
+<h4 class="font-bold text-deep-teal dark:text-white leading-tight mb-2">Amazon $10 Gift Card</h4>
+<div class="flex items-center justify-between">
+<span class="text-primary font-bold">2,500 pts</span>
+<button class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Reward Card 2 -->
+<div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm group hover:-translate-y-1 transition-transform duration-300 cursor-pointer flex flex-col">
+<div class="h-32 rounded-xl bg-gray-50 dark:bg-black/20 mb-3 flex items-center justify-center relative overflow-hidden">
+<div class="w-20 h-20 bg-contain bg-center bg-no-repeat group-hover:scale-110 transition-transform duration-500" data-alt="3D eco-friendly sneaker shoe" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDmQRtzChx4FkPPPsH7Hv-3nSxCFDt2UtClX0uzQBXYur1urnzijz8Cw6ZdVj92vlry-ZqRyQ6HRfoOCE9q2icR14qxrJ8yz_sdTTpVmrLrfi5dC9BhlsARprYz95-eRDjVhjMq2NHCygMHjWR9q2oyh6EBxzZdiHV6wjUoUX7pbeO_03FYvt_-Hbq7NXz2wcdU5e6PESl9jcxKyEyE0UUT5jS6V6mzNZ-2ivOZMofj7VnRUGQ-IZzld1wEhyLR6z3DuUIz1lNuzA');"></div>
+</div>
+<div class="mt-auto">
+<p class="text-xs text-gray-500 uppercase font-semibold">Apparel</p>
+<h4 class="font-bold text-deep-teal dark:text-white leading-tight mb-2">Eco-Sneakers raffle</h4>
+<div class="flex items-center justify-between">
+<span class="text-primary font-bold">500 pts</span>
+<button class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

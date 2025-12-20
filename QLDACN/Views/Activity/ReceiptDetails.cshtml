@@ -1,0 +1,119 @@
+@model QLDACN.Models.WasteReceipt
+@{
+    ViewData["Title"] = "Chi tiết phiếu ghi nhận";
+    var schedule = Model.Schedule!;
+}
+<section class="px-4 md:px-8 lg:px-40 py-10">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <header class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-2xl font-extrabold text-text-main">Phiếu ghi nhận #@Model.ReceiptId</h2>
+                    <p class="text-xs text-gray-500">Lịch @schedule.ScheduledDate.ToString("dd/MM/yyyy HH:mm") • @schedule.PickupAddress</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                @{
+                    var userName = schedule.User?.FullName ?? schedule.User?.Username ?? "User";
+                    var initial = userName.Substring(0,1).ToUpperInvariant();
+                }
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary border border-primary/20">Tổng điểm @Model.TotalPoints</span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-primary">location_on</span>
+                        <h3 class="text-lg font-bold">Địa điểm thu gom</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs text-gray-500">Địa chỉ nhận</label>
+                            <input type="text" value="@schedule.PickupAddress" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500">Người dùng</label>
+                            <input type="text" value="@(schedule.User?.FullName ?? schedule.User?.Username ?? "—")" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-primary">list_alt</span>
+                        <h3 class="text-lg font-bold">Chi tiết phiếu</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/10">
+                                    <th class="py-3 font-medium uppercase tracking-wider">Loại rác</th>
+                                    <th class="py-3 font-medium uppercase tracking-wider">Đơn vị</th>
+                                    <th class="py-3 font-medium uppercase tracking-wider">Số lượng</th>
+                                    <th class="py-3 font-medium uppercase tracking-wider">Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-text-sec-light dark:text-text-sec-dark">
+                                @foreach (var d in Model.Details)
+                                {
+                                    var wtName = d.WasteType?.Name?.ToLower() ?? "";
+                                    var icon = "inventory_2";
+                                    if (wtName.Contains("nhựa") || wtName.Contains("pet") || wtName.Contains("pp") || wtName.Contains("hdpe") || wtName.Contains("túi")) icon = "delete";
+                                    else if (wtName.Contains("giấy")) icon = "article";
+                                    else if (wtName.Contains("cát-tông") || wtName.Contains("carton")) icon = "inventory_2";
+                                    else if (wtName.Contains("chai") || wtName.Contains("lọ") || wtName.Contains("thủy tinh")) icon = "wine_bar";
+                                    else if (wtName.Contains("lon") || wtName.Contains("nhôm") || wtName.Contains("thiếc")) icon = "lunch_dining";
+                                    <tr class="border-t border-gray-50 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                        <td class="py-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-primary">@icon</span>
+                                                <span class="font-medium">@d.WasteType?.Name</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3">@d.WasteType?.Unit</td>
+                                        <td class="py-3">@d.QuantityOfWaste</td>
+                                        <td class="py-3">@d.TotalWastePoints</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden rounded-2xl p-6 bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/10 shadow-lg">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-14 -left-14 w-48 h-48 bg-emerald-200/20 dark:bg-white/5 rounded-full blur-3xl"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-primary">info</span>
+                        <h4 class="text-base font-bold">Thông tin phiếu</h4>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">
+                        <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                            <span>Phiếu</span>
+                            <span class="font-bold">#@Model.ReceiptId</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                            <span>Thời gian</span>
+                            <span class="font-bold">@schedule.ScheduledDate.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                            <span>Tổng điểm</span>
+                            <span class="font-bold text-primary">@Model.TotalPoints</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <span>Ngày tạo</span>
+                            <span class="font-bold">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

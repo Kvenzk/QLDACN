@@ -1,0 +1,41 @@
+@model IEnumerable<QLDACN.Models.WasteReceipt>
+@{
+    ViewData["Title"] = "Phiếu ghi nhận";
+}
+<section class="px-4 md:px-8 lg:px-40 py-10">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <h1 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark mb-6">Phiếu ghi nhận</h1>
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/10">
+                            <th class="py-3 font-medium uppercase tracking-wider">Phiếu</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Thời gian</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Ghi chú</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Ngày tạo</th>
+                            <th class="py-3 font-medium uppercase tracking-wider">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-text-sec-light dark:text-text-sec-dark">
+                        @foreach (var r in Model)
+                        {
+                            <tr class="border-b border-gray-50 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <td class="py-4">#@r.ReceiptId</td>
+                                <td class="py-4">@r.Schedule?.ScheduledDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="py-4">@((string.IsNullOrWhiteSpace(r.Schedule?.Note) ? "—" : r.Schedule!.Note))</td>
+                                <td class="py-4">@r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="py-4">
+                                    <a asp-action="ReceiptDetails" asp-route-id="@r.ReceiptId"
+                                       class="px-3 py-1 rounded-lg text-xs font-bold bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

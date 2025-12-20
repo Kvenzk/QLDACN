@@ -1,0 +1,65 @@
+@model QLDACN.Models.User
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+    var netPoints = Model.TotalPoints;
+}
+<section class="px-4 md:px-8 lg:px-40 py-8 bg-background-light dark:bg-background-dark">
+    <div class="w-full max-w-[1280px] mx-auto">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
+                <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="flex flex-col">
+                <h2 class="text-xl font-bold text-deep-teal dark:text-white">Thông tin cá nhân</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Quản lý hồ sơ và điểm tích lũy</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary">badge</span>
+                    <h3 class="text-lg font-bold">Hồ sơ</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500">Họ tên</label>
+                        <input type="text" value="@((Model.FullName ?? Model.Username))" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Email</label>
+                        <input type="text" value="@Model.Email" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Số điện thoại</label>
+                        <input type="text" value="@Model.Phone" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Địa chỉ</label>
+                        <input type="text" value="@Model.Address" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Vai trò</label>
+                        <input type="text" value="@Model.Role?.RoleName" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Ngày tạo</label>
+                        <input type="text" value="@Model.CreatedAt.ToString("dd/MM/yyyy")" class="mt-1 w-full rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                    </div>
+                </div>
+            </div>
+                    <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                        <h3 class="text-lg font-bold mb-4">Điểm tích lũy</h3>
+                        <div class="p-4 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 to-emerald-100/30 dark:from-primary/10 dark:to-white/5 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-500">Điểm tích lũy</span>
+                                <span class="text-3xl font-extrabold text-primary">@netPoints.ToString("N0") điểm</span>
+                            </div>
+                            <span class="material-symbols-outlined text-primary bg-white dark:bg-[#15241c] border border-primary/20 rounded-full p-3">stars</span>
+                        </div>
+                        <a asp-controller="Activity" asp-action="Points" class="mt-4 w-full h-11 inline-flex items-center justify-center rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-sm shadow-md">
+                            Xem lịch sử tích điểm
+                        </a>
+                    </div>
+        </div>
+    </div>
+</section>

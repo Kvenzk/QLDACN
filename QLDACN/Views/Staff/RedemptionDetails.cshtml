@@ -1,0 +1,202 @@
+@model QLDACN.Models.GiftRedemption
+@{
+    ViewData["Title"] = "Chi tiết giao quà";
+    Layout = null;
+    var userName = Model.User?.FullName ?? Model.User?.Username ?? "User";
+    var statusText = Model.Status == "Completed" ? "Đã duyệt" : Model.Status == "Pending" ? "Đang chờ" : Model.Status;
+    var statusClass = Model.Status == "Completed"
+        ? "px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 border border-green-200"
+        : Model.Status == "Pending"
+            ? "px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 border border-yellow-200"
+            : "px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200";
+}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhân viên - Chi tiết giao quà</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#11d473",
+                        "primary-dark": "#0e9f56",
+                        "deep-teal": "#0d1b14",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102219",
+                    },
+                    fontFamily: { display: ["Inter", "sans-serif"] },
+                    borderRadius: { "2xl": "1rem" }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+        <aside class="hidden md:flex flex-col w-64 h-full bg-deep-teal text-white flex-shrink-0">
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-deep-teal text-xl">recycling</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">Trash to Reward</h1>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Index">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Bảng điều khiển</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Schedules">
+                    <span class="material-symbols-outlined">event</span>
+                    <span class="text-sm font-medium">Lịch thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors" asp-controller="Staff" asp-action="Receipts">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-sm font-medium">Ghi nhận thu gom</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" asp-controller="Staff" asp-action="Deliveries">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <span class="text-sm font-medium">Lịch giao quà</span>
+                </a>
+            </nav>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="px-4 py-4 mt-auto">
+                @{
+                    var staffName = User?.Identity?.Name ?? "Nhân viên";
+                    var staffInitial = string.IsNullOrWhiteSpace(staffName) ? "NV" : staffName.Substring(0,1).ToUpperInvariant();
+                }
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors border border-white/10">
+                    <div class="w-7 h-7 rounded-full bg-primary text-deep-teal flex items-center justify-center font-bold">@staffInitial</div>
+                    <span class="text-sm font-medium flex-1 text-left">@staffName</span>
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </form>
+        </aside>
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fcfa] dark:bg-background-dark relative">
+            <header class="h-20 flex items-center justify-between px-8 bg-gradient-to-r from-primary/10 via-emerald-200/20 to-transparent dark:from-primary/10 dark:via-white/5 dark:to-transparent border-b border-gray-100 dark:border-white/5 sticky top-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined">card_giftcard</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl font-extrabold text-deep-teal dark:text-white">Phiếu giao quà #@Model.RedemptionId</h2>
+                        <p class="text-xs text-gray-500">@userName</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary border border-primary/20">Tổng điểm dùng @Model.TotalPointsSpent</span>
+                    <span class="@statusClass">@statusText</span>
+                </div>
+            </header>
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="w-full max-w-none mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 flex flex-col gap-6">
+                        <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">location_on</span>
+                                <h3 class="text-lg font-bold">Thông tin giao quà</h3>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Địa chỉ giao quà</label>
+                                    <input type="text" value="@Model.DeliveryAddress" class="mt-1 w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Người nhận</label>
+                                    <input type="text" value="@userName" class="mt-1 w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#1a2c24] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">list_alt</span>
+                                <h3 class="text-lg font-bold">Chi tiết phần quà</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-xs text-gray-400 border-b border-gray-100 dark:border-white/10">
+                                            <th class="py-3 font-medium uppercase tracking-wider">Phần quà</th>
+                                            <th class="py-3 font-medium uppercase tracking-wider">Điểm/quà</th>
+                                            <th class="py-3 font-medium uppercase tracking-wider">Số lượng</th>
+                                            <th class="py-3 font-medium uppercase tracking-wider">Tổng điểm</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm text-text-sec-light dark:text-text-sec-dark">
+                                        @foreach (var d in Model.Details)
+                                        {
+                                            var cat = d.Gift?.Category ?? "";
+                                            var icon = cat == "Voucher" ? "confirmation_number" : (cat == "Quyên góp" ? "volunteer_activism" : "redeem");
+                                            var img = d.Gift?.ImageUrl;
+                                            <tr class="border-t border-gray-50 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                                <td class="py-3">
+                                                    <div class="flex items-center gap-3">
+                                                        @if (!string.IsNullOrWhiteSpace(img))
+                                                        {
+                                                            <img src="@img" alt="@d.Gift?.Name" class="w-10 h-10 rounded-lg object-cover border border-gray-100 dark:border-white/10" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                                                                <span class="material-symbols-outlined">@icon</span>
+                                                            </div>
+                                                        }
+                                                        <div class="flex flex-col">
+                                                            <span class="font-medium">@d.Gift?.Name</span>
+                                                            @if (!string.IsNullOrWhiteSpace(d.Gift?.Description))
+                                                            {
+                                                                <span class="text-xs text-gray-500">@d.Gift?.Description</span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-3">@d.PointsSpent</td>
+                                                <td class="py-3">@d.Quantity</td>
+                                                <td class="py-3">@d.TotalPoints</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl p-6 bg-white dark:bg-[#1a2c24] border border-gray-100 dark:border-white/5 shadow-lg">
+                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
+                        <div class="absolute -bottom-14 -left-14 w-48 h-48 bg-emerald-200/20 dark:bg-white/5 rounded-full blur-3xl"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary">info</span>
+                                <h4 class="text-base font-bold">Thông tin phiếu</h4>
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">
+                                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                                    <span>Phiếu</span>
+                                    <span class="font-bold">#@Model.RedemptionId</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                                    <span>Trạng thái</span>
+                                    <span class="font-bold">@statusText</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/10">
+                                    <span>Tổng điểm dùng</span>
+                                    <span class="font-bold text-primary">@Model.TotalPointsSpent</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2">
+                                    <span>Ngày tạo</span>
+                                    <span class="font-bold">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
