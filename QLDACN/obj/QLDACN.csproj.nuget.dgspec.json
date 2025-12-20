@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\QLKS\\QLDACN\\QLDACN\\QLDACN.csproj": {}
+    "C:\\QLKS\\Test\\QLDACN\\QLDACN\\QLDACN.csproj": {}
   },
   "projects": {
-    "C:\\QLKS\\QLDACN\\QLDACN\\QLDACN.csproj": {
+    "C:\\QLKS\\Test\\QLDACN\\QLDACN\\QLDACN.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\QLKS\\QLDACN\\QLDACN\\QLDACN.csproj",
+        "projectUniqueName": "C:\\QLKS\\Test\\QLDACN\\QLDACN\\QLDACN.csproj",
         "projectName": "QLDACN",
-        "projectPath": "C:\\QLKS\\QLDACN\\QLDACN\\QLDACN.csproj",
+        "projectPath": "C:\\QLKS\\Test\\QLDACN\\QLDACN\\QLDACN.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "C:\\QLKS\\QLDACN\\QLDACN\\obj\\",
+        "outputPath": "C:\\QLKS\\Test\\QLDACN\\QLDACN\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
